@@ -1,6 +1,5 @@
 import NextAuth from "next-auth"
 import Adapters from "next-auth/adapters"
-import 
 import Models from "../../../models"
 
 export default NextAuth({
