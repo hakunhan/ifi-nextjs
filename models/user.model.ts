@@ -1,4 +1,4 @@
-import Adapters from "next-auth/adapters"
+import Adapters, {TypeORMUserModel} from 'next-auth/adapters'
 
 // Extend the built-in models using class inheritance
 export default class User extends Adapters.TypeORM.Models.User.model {
