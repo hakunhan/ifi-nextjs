@@ -3,6 +3,7 @@ import Adapters from "next-auth/adapters"
 import Models from "../../../models"
 
 export default NextAuth({
+  providers: [],  
   adapter: Adapters.TypeORM.Adapter(
     // The first argument should be a database connection string or TypeORM config object
     process.env.MONGODB_URL,
