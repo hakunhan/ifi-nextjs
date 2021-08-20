@@ -12,7 +12,8 @@ export default async function handler(req, res){
   switch (method){
     case 'GET':
       try {
-        var account = await AccountModel.findOne({id: query.id})
+        const queryId = id;
+        var account = await AccountModel.findOne({id: queryId})
         if (!account){
             res.status(400).json({ success: false })
         }
@@ -23,7 +24,7 @@ export default async function handler(req, res){
       break;
     case 'PUT':
       try {
-        var account = await AccountModel.findOneAndUpdate({id: query.id}, req.body, {
+        var account = await AccountModel.findOneAndUpdate({id: queryId}, req.body, {
             new: true
         })
         if (!account){

@@ -22,7 +22,7 @@ export default async function handler(req, res){
         )
         res.status(201).json({ success: true, data: account })
       } catch (error) {
-        res.status(400).json({ success: false })
+        res.status(400).json({ success: false, error })
       }
       break;
     default:
