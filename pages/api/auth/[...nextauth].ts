@@ -8,7 +8,7 @@ export default NextAuth({
     Providers.Credentials({
     name: 'Credentials',
     authorize: async (credentials) => {
-        const account = await axios.post('https://myapi.com/login',
+        const account = await axios.post('http://localhost:3000/api/account/findLoginAccount',
             {
               account: {
                   password: credentials.password,
