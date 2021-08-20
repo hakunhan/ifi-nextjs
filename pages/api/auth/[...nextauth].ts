@@ -1,27 +1,43 @@
 import NextAuth from "next-auth"
 import Adapters from "next-auth/adapters"
-import Models from "../../../models"
+import axios from 'axios'
+import Providers from 'next-auth/providers'
 
 export default NextAuth({
-  providers: [],  
-  adapter: Adapters.TypeORM.Adapter(
-    // The first argument should be a database connection string or TypeORM config object
-    process.env.MONGODB_URL,
-    // The second argument can be used to pass custom models and schemas
-    {
-      models: {
-        User: Models.User,
-      },
+  providers: [
+    Providers.Credentials({
+    name: 'Credentials',
+    authorize: async (credentials) => {
+        const account = await axios.post('https://myapi.com/login',
+            {
+              account: {
+                  password: credentials.password,
+                  email: credentials.email
+              }
+            },
+            {
+            headers: {
+                accept: '*/*',
+                'Content-Type': 'application/json'
+            }
+        })
+
+        if (account) {
+            return account
+        } else {
+            return null
+        }   
     }
-  ),
+    })
+  ],
   session: { jwt: true },
   callbacks: {
-    async jwt(token, user, account, profile, isNewUser) {
+    async jwt(token, account, profile, isNewAccount) {
       if (account?.accessToken) {
         token.accessToken = account.accessToken;
       }
-      if (user?.roles) {
-        token.roles = user.roles;
+      if (account?.roles) {
+        token.roles = account.roles;
       }
       return token;
     },
@@ -30,7 +46,7 @@ export default NextAuth({
         session.accessToken = token.accessToken;
       }
       if (token?.roles) {
-        session.user.roles = token.roles;
+        session.account.roles = token.roles;
       }
       return session;
     }
