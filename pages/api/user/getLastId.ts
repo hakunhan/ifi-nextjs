@@ -1,5 +1,5 @@
 import dbConnect from '../../../lib/dbConnect';
-import AccountModel from '../../../models/account';
+import UserModel from '../../../models/user';
 
 export default async function handler(req, res){
   const method = req.method;
@@ -8,8 +8,8 @@ export default async function handler(req, res){
 
   if (method === 'GET'){
     try {
-        var account = await AccountModel.findOne({}).sort('-id');
-        res.status(200).json({ success: true, data: account.id })
+        var user = await UserModel.findOne({}).sort('-id');
+        res.status(200).json({ success: true, data: user.id })
     } catch (error) {
         res.status(400).json({ success: false })
     }

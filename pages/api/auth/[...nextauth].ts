@@ -1,54 +1,60 @@
 import NextAuth from "next-auth"
-import Adapters from "next-auth/adapters"
-import axios from 'axios'
+import axios from "axios";
 import Providers from 'next-auth/providers'
 
-export default NextAuth({
-  providers: [
-    Providers.Credentials({
+const providers = [
+  Providers.Credentials({
     name: 'Credentials',
     authorize: async (credentials) => {
-        const account = await axios.post('http://localhost:3000/api/account/findLoginAccount',
-            {
-              account: {
-                  password: credentials.password,
-                  email: credentials.email
-              }
-            },
-            {
-            headers: {
-                accept: '*/*',
-                'Content-Type': 'application/json'
-            }
+      try {
+        const user = await axios.post("http://localhost:3000/api/user/findLoginUser",
+        {
+          user: {
+            password: credentials.password,
+            email: credentials.email
+          }
+        },
+        {
+          headers: {
+            accept: '*/*',
+            'Content-Type': 'application/json'
+          }
         })
 
-        if (account) {
-            return account
-        } else {
-            return null
-        }   
+        if (user) {
+          return {status: 'success', data: user.data}
+        } 
+
+      } catch (e) {
+        const errorMessage = !e.response.data.success;
+        throw new Error(errorMessage + '&email=' + credentials.email)
+      }
     }
-    })
-  ],
-  session: { jwt: true },
-  callbacks: {
-    async jwt(token, account, profile, isNewAccount) {
-      if (account?.accessToken) {
-        token.accessToken = account.accessToken;
-      }
-      if (account?.roles) {
-        token.roles = account.roles;
-      }
-      return token;
-    },
-    async session(session, token) {
-      if(token?.accessToken) {
-        session.accessToken = token.accessToken;
-      }
-      if (token?.roles) {
-        session.account.roles = token.roles;
-      }
-      return session;
+  })
+]
+
+const callbacks = {
+  async jwt(token, user) {
+    if (user) {
+      token.accessToken = user.data.data;
     }
+
+    return token
+  },
+
+  async session(session, token) {
+    session.accessToken = token.accessToken;
+    session.user.role = token.accessToken.role;
+    return session
   }
-})
+}
+
+const options = {
+  providers,
+  callbacks,
+  pages: {
+    error: '/login'
+  }
+}
+
+export default (req, res) => NextAuth(req, res, options);

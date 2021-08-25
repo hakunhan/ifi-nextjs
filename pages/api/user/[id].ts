@@ -1,47 +1,45 @@
 import dbConnect from '../../../lib/dbConnect';
-import AccountModel from '../../../models/account';
+import UserModel from '../../../models/user';
 
 export default async function handler(req, res){
-  const {
-    query: { id },
-    method,
-  } = req
+  const { method } = req
+  const queryId = parseInt(req.query.id);
 
   await dbConnect();
 
   switch (method){
     case 'GET':
       try {
-        const queryId = id;
-        var account = await AccountModel.findOne({id: queryId})
-        if (!account){
-            res.status(400).json({ success: false })
+        var user = await UserModel.findOne({_id: queryId});
+        if (!user){
+          res.status(400).json({ success: false });
+          return;
         }
-        res.status(200).json({ success: true, data: account })
+        res.status(200).json({ success: true, data: user });
       } catch (error) {
-        res.status(400).json({ success: false })
+        res.status(400).json({ success: false });
       }
       break;
     case 'PUT':
       try {
-        var account = await AccountModel.findOneAndUpdate({id: queryId}, req.body, {
+        var user = await UserModel.findOneAndUpdate({_id: queryId}, req.body, {
             new: true
         })
-        if (!account){
+        if (!user){
             res.status(400).json({ success: false })
         }
-        res.status(200).json({ success: true, data: account})
+        res.status(200).json({ success: true, data: user})
       } catch (error) {
         res.status(400).json({ success: false })
       }
       break;
     case 'DELETE':
       try {
-        var account = await AccountModel.deleteOne({id: query.id});
-        if (!account){
+        var user = await UserModel.deleteOne({_id: queryId});
+        if (!user){
             res.status(400).json({ success: false })
         }
-        res.status(200).json({ success: true, data: account})
+        res.status(200).json({ success: true, data: user})
       } catch (error) {
         res.status(400).json({ success: false })
       }

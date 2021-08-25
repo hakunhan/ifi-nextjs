@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
-import { Account } from './../interfaces/account';
+import { Model, model, models, Schema } from "mongoose";
+import { IUser } from './../interfaces/User';
 
-const AccountSchema = new mongoose.Schema<Account>({
+var UserSchema: Schema = new Schema({
     _id: { type: Number },
     role: { type: String, required: true},
     name: { type: String, required: true},
@@ -12,4 +12,6 @@ const AccountSchema = new mongoose.Schema<Account>({
     activated: {type: Boolean, default: true},
 })
 
-export default mongoose.models.AccountSchema || mongoose.model('Account', AccountSchema)
+export default (models.UserModel
+    ? models.UserModel
+    : model("UserModel", UserSchema)) as Model<IUser>;

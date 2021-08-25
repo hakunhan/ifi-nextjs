@@ -1,50 +1,62 @@
-import Head from 'next/head'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { signIn, useSession } from 'next-auth/client'
+import Head from 'next/head';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/client';
+import { FormSubscription } from 'final-form';
+import LoginForm from "../components/form/loginForm";
+import { IAccount } from "../interfaces/account";
+
+import styles from "../styles/components/login.module.scss";
 
 export default function Login () {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoginStarted, setIsLoginStarted] = useState(false)
-  const [loginError, setLoginError] = useState('')
-  const router = useRouter()
+  const router = useRouter();
 
-  useEffect(() => {
-    if (router.query.error) {
-      setLoginError(router.query.error)
-      setEmail(router.query.email)
+  var initialValues: IAccount = {
+    email: "",
+    password: ""
+  }
+
+  var loginError = false;
+
+  if (router.query.error){
+    initialValues.email = router.query.email;
+    loginError = router.query.error;
+  }
+
+  const subscription =  { submitting: true };
+
+  const handleLogin = (values) => {
+    if (!values){
+      return;
     }
-  }, [router])
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    setIsLoginStarted(true)
+    const email = values.email;
+    const password = values.password;
+
     signIn('credentials',
       {
         email,
         password,
+        callbackUrl: `${window.location.origin}/admin-dashboard`
       }
-    )
-    alert("Login!")
+    ).then((error) => {
+      console.log(error);
+    })
   }
 
   return (
     <div>
       <Head>
-        <title>NextAuth Example</title>
+        <title>Login</title>
       </Head>
       <main>
-        <div>
-          <h1>Welcome Back</h1>
-          <form onSubmit={(e) => handleLogin(e)}>
-            <label htmlFor='loginEmail'>Email</label>
-            <input id='loginEmail' type='email' value={email} onChange={(e) => setEmail(e.target.value)} />
-            <span>{loginError}</span>
-            <label htmlFor='inputPassword'>Password</label>
-            <input id='inputPassword' type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button type='submit' disabled={isLoginStarted}>Log In</button>
-          </form>
+        <div className={styles.container}>
+          <h1>Login</h1>
+          <LoginForm 
+            initialValues = {initialValues}
+            handleLogin = {handleLogin}
+            loginError = {loginError}
+          />
         </div>
       </main>
     </div>
