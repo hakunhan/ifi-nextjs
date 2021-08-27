@@ -12,7 +12,7 @@ export async function getUsers(){
           }
         });
 
-        const users:IUser[] = queryUser.data.data;
+        const users:IUser[] = queryUsers.data.data;
         return users;
     }catch(e){
         return null;
