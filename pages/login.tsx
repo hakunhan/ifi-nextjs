@@ -1,27 +1,19 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/client';
+import { useState } from 'react';
+import { signIn, useSession, getSession } from 'next-auth/client';
 import { FormSubscription } from 'final-form';
 import LoginForm from "../components/form/loginForm";
-import { IAccount } from "../interfaces/account";
+import { LocalAPI } from "../components/utils/api"
 
 import styles from "../styles/components/login.module.scss";
 
 export default function Login () {
   const router = useRouter();
+  var [ session, loading ] = useSession();
 
-  var initialValues: IAccount = {
-    email: "",
-    password: ""
-  }
-
-  var loginError = false;
-
-  if (router.query.error){
-    initialValues.email = router.query.email;
-    loginError = router.query.error;
-  }
+  const [initialValues, setInitialValues] = useState({email: "", password: ""});
+  const [loginError, setLoginError] = useState(false);
 
   const subscription =  { submitting: true };
 
@@ -37,10 +29,18 @@ export default function Login () {
       {
         email,
         password,
-        callbackUrl: `${window.location.origin}/admin-dashboard`
+        redirect: false
       }
-    ).then((error) => {
-      console.log(error);
+    ).then((data) => {
+      if (data.error && data.error.length > 0){
+        setInitialValues({email: email, password: ""})
+        setLoginError(true);
+        return;
+      }
+
+      router.push('/');
+    }).catch((e) => {
+      console.log(e)
     })
   }
 

@@ -36,10 +36,7 @@ export default async function handler(req, res){
     case 'DELETE':
       try {
         var user = await UserModel.deleteOne({_id: queryId});
-        if (!user){
-            res.status(400).json({ success: false })
-        }
-        res.status(200).json({ success: true, data: user})
+        res.status(200).json({ success: true})
       } catch (error) {
         res.status(400).json({ success: false })
       }
