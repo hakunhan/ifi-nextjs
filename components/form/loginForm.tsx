@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Form } from 'react-final-form';
 import { TextField, makeValidate, makeRequired } from 'mui-rff';
 import { LoginValidatorSchema } from "../validator/loginValidatorSchema";
-import { IAccount } from "../../interfaces/IAccount";
 import { Grid, Button, CssBaseline } from '@material-ui/core';
 
 import styles from "../../styles/components/login.module.scss"
