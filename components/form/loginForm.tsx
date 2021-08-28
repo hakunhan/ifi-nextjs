@@ -9,7 +9,7 @@ import styles from "../../styles/components/login.module.scss"
 export default function LoginForm(props){
     const validate = makeValidate(LoginValidatorSchema); 
     const required = makeRequired(LoginValidatorSchema);
-    const [submittedValues, setSubmittedValues] = useState<IAccount | undefined>(undefined);
+    const [submittedValues, setSubmittedValues] = useState(undefined);
 
     const formFields = [
         <TextField
@@ -58,7 +58,7 @@ export default function LoginForm(props){
                         type="submit"
                         disabled={submitting}
                     >
-                        Submit
+                        Login
                     </Button>
                 </form>
             )}

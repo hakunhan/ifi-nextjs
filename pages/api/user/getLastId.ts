@@ -8,7 +8,7 @@ export default async function handler(req, res){
 
   if (method === 'GET'){
     try {
-        var user = await UserModel.findOne({}).sort('-id');
+        var user = await UserModel.findOne({}).sort('-_id');
         res.status(200).json({ success: true, data: user.id })
     } catch (error) {
         res.status(400).json({ success: false })

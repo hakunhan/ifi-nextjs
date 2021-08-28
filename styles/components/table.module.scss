@@ -1,0 +1,37 @@
+.container{
+    margin-top: 3em;
+    margin-left: 10%;
+    width: 80% !important;
+}
+
+.table_head{
+    font-weight: bold !important;
+}
+
+.table_head_action{
+    font-weight: bold !important;
+    padding-right: 2em !important;
+}
+
+.table_title{
+    flex-grow: 1;
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.add_user{
+    background-color: green !important;
+    color: #fff !important;
+}
+
+.pagination_container{
+    flex-shrink: 0;
+}
+
+.activate{
+    color: green !important;
+}
+
+.deactivate{
+    color: red !important; 
+}

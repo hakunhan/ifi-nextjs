@@ -37,18 +37,16 @@ export async function getUser(id: Number) {
 }
 
 export async function addUser(newUser: any) {
-    const id = getLastId();
+    console.log(newUser);
     try {
-        const queryUsers = await axios.post(LocalAPI + 'api/user/',
+        const queryUser = await axios.post(LocalAPI + 'api/user/',
         {
-            user: {
-                id: id,
-                name: newUser.name,
-                email: newUser.email,
-                password: newUser.password,
-                role: newUser.role,
-                activated: newUser.activated,
-            }
+          _id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          password: newUser.password,
+          role: newUser.role,
+          activated: newUser.activated,
         },
         {
           headers: {
@@ -60,7 +58,8 @@ export async function addUser(newUser: any) {
         const user:IUser = queryUser.data.data;
         return user;
     }catch(e){
-        return null;
+      console.log(e);
+      return null;
     }
 }
 
@@ -143,6 +142,26 @@ export async function queryLogin(email: String, password: string): IUser | null 
 
         const user:IUser = queryUser.data.data;
         return user;
+    }catch(e){
+        return null;
+    }
+}
+
+export async function checkDuplicateEmail(email: String): boolean {
+    try {
+        const queryData = await axios.post(LocalAPI + "api/user/checkDuplicateEmail",
+        {
+            email: email
+        },
+        {
+          headers: {
+            accept: '*/*',
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = queryData.data.duplicate;
+        return result;
     }catch(e){
         return null;
     }
