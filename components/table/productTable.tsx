@@ -1,9 +1,11 @@
 import { React, useState } from 'react';
 import Moment from 'react-moment';
+import Link from 'next/link';
 
 import { Button, CssBaseline, Paper, Typography, Table, TableBody, TableCell, TableContainer, 
          TableHead, TableRow, TableFooter, TablePagination, Toolbar, IconButton } from '@material-ui/core';
 import { makeStyles, createStyles, useTheme, Theme } from '@material-ui/core/styles'
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
@@ -63,13 +65,13 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-export default function UserTable(props){
-    if (!props.users) return null;
+export default function ProductTable(props){
+    if (!props.products) return null;
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.users.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.products.length - page * rowsPerPage);
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -88,54 +90,63 @@ export default function UserTable(props){
         <TableContainer component={Paper} className={styles.container}>
             <Toolbar>
                 <Typography variant="h6" component="div" className={styles.table_title}>
-                    User Dashboard
+                    Product Dashboard
                 </Typography>
                 <div>
                     <Button variant="contained" 
                     className={styles.add}
-                    onClick={() => props.toggleUserForm(undefined)}>Add user</Button>
+                    onClick={() => props.toggleProductForm(undefined)}>Add product</Button>
                 </div>
             </Toolbar>
             <Table>
                 <TableHead>
                     <TableRow>
                         <TableCell align="right" className = {styles.table_head}>Id</TableCell>
+                        <TableCell align="right" className = {styles.table_head}>Product image</TableCell>
                         <TableCell align="right" className = {styles.table_head}>Name</TableCell>
-                        <TableCell align="right" className = {styles.table_head}>Email</TableCell>
-                        <TableCell align="right" className = {styles.table_head}>Role</TableCell>
+                        <TableCell align="right" className = {styles.table_head}>Quantity</TableCell>
+                        <TableCell align="right" className = {styles.table_head}>Price</TableCell>
+                        <TableCell align="right" className = {styles.table_head}>Status</TableCell>
                         <TableCell align="right" className = {styles.table_head}>Created At</TableCell>
                         <TableCell align="right" className = {styles.table_head}>Updated At</TableCell>
-                        <TableCell align="right" className = {styles.table_head}>Activated</TableCell>
                         <TableCell align="right" className={styles.table_head_action}>Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {(rowsPerPage > 0
-                        ? props.users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage): props.users
-                        ).map((user) => (
-                        <TableRow key = {user.id}>
-                            <TableCell component="th" scope='row' align="right">{user._id}</TableCell>
-                            <TableCell align="right">{user.name}</TableCell>
-                            <TableCell align="right">{user.email}</TableCell>
-                            <TableCell align="right">{user.role}</TableCell>
+                        ? props.products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage): props.products
+                        ).map((product) => (
+                        <TableRow key = {product._id}>
+                            <TableCell component="th" scope='row' align="right">{product._id}</TableCell>
+                            <TableCell align="right">
+                                <img className={styles.img} src={product.imgUrl} alt="No img" />
+                            </TableCell>
+                            <TableCell align="right">{product.name}</TableCell>
+                            <TableCell align="right">{product.quantity}</TableCell>
+                            <TableCell align="right">{product.price}</TableCell>
+                            <TableCell align="right" className={product.status ? styles.activate : styles.deactivate}>
+                                {product.status ? "On sell" : "Out of stock!"}
+                            </TableCell>
                             <TableCell align="right">
                                 <Moment local format="DD/MM/YYYY HH:mm">
-                                    {user.createdAt}
+                                    {product.createdAt}
                                 </Moment>
                             </TableCell>
                             <TableCell align="right">
                                 <Moment local format="DD/MM/YYYY HH:mm">
-                                    {user.updatedAt}
+                                    {product.updatedAt}
                                 </Moment>
                             </TableCell>
-                            <TableCell align="right" className={user.activated ? styles.activate : styles.deactivate}>
-                                {user.activated ? "Activated" : "Deactivated"}
-                            </TableCell>
                             <TableCell align="right">
-                                <IconButton onClick={() => props.toggleUserForm(user)}>
+                                <Link href = {`/user-dashboard/${product._id}`}>
+                                  <IconButton>
+                                    <VisibilityIcon color="primary"/>
+                                  </IconButton>
+                                </Link>
+                                <IconButton onClick={() => props.toggleProductForm(product)}>
                                     <EditIcon color="primary"/>
                                 </IconButton>
-                                <IconButton onClick={() => props.deleteSelectedUser(user._id)}>
+                                <IconButton onClick={() => props.deleteSelectedProduct(product._id)}>
                                     <DeleteIcon color="secondary"/>
                                 </IconButton>
                             </TableCell>
@@ -147,7 +158,7 @@ export default function UserTable(props){
                         <TablePagination
                         rowsPerPageOptions={[1, 2, 5, 10, 25]}
                         colSpan={10}
-                        count={props.users.length}
+                        count={props.products.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{

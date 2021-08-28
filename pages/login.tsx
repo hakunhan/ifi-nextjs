@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { signIn, useSession, getSession } from 'next-auth/client';
+
 import { FormSubscription } from 'final-form';
 import LoginForm from "../components/form/loginForm";
 import { LocalAPI } from "../components/utils/api"
@@ -38,7 +39,14 @@ export default function Login () {
         return;
       }
 
-      router.push('/');
+      getSession().then(session => {
+        if(session.user.role == "admin"){
+          router.push("http://localhost:3000/admin-dashboard")
+        }else if(session.user.role == "user"){
+          router.push("http://localhost:3000/user-dashboard")
+        }
+      });
+
     }).catch((e) => {
       console.log(e)
     })

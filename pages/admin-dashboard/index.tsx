@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import { useSession } from 'next-auth/client';
+import { useSession, getSession } from 'next-auth/client';
 import { GetServerSideProps } from 'next';
 
 import { Drawer } from '@material-ui/core';
@@ -14,7 +14,18 @@ import UserGenerator from '../../components/utils/userGenerator';
 import IUser from '../../interfaces/user';
 import UserForm from '../../components/form/userForm'
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
+  const session = await getSession({ req: context.req });
+
+    if (!session || session.user.role != "admin") {
+        return {
+        redirect: {
+            destination: '/login',
+            permanent: false,
+        },
+        };
+    }
+
   const data = await getUsers();
   const lastId = await getLastId();
   return {props: {data, lastId}}
@@ -40,7 +51,7 @@ export default function AdminDashboard({data, lastId}) {
 
   const toggleUserForm = (user) => {
     if (user == undefined){
-      setSelectedUser(UserGenerator(lastId.data));
+      setSelectedUser(UserGenerator(userLastId));
       setUpdateUserData(false);
     }else{
       setSelectedUser(user);
@@ -83,6 +94,7 @@ export default function AdminDashboard({data, lastId}) {
 
       setUsers([...users]);
       deleteUser(id);
+      userLastId--;
       return;
     }
   }

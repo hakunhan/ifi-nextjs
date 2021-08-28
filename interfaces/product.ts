@@ -1,10 +1,11 @@
-export interface Product {
-  id: number,
-  imgUrl: string,
-  name: string,
-  quantity: number,
-  price: number,
-  description: string,
-  status: boolean,
+export interface IProduct {
+  _id: Number,
+  imgUrl: String,
+  name: String,
+  quantity: Number,
+  price: Number,
+  description: String,
+  status: Boolean,
+  createdAt: Date,
   updatedAt: Date
 }

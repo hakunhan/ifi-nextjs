@@ -4,16 +4,21 @@ import { Form } from 'react-final-form';
 import { TextField, Select, makeValidate, makeRequired } from 'mui-rff';
 import { Grid, Button, MenuItem, CssBaseline, Typography } from '@material-ui/core';
 
-import { UserValidatorSchema } from '../validator/userValidatorSchema'
+import { ProductValidatorSchema } from '../validator/productValidatorSchema'
 import styles from '../../styles/components/form.module.scss'
 
-export default function UserForm(props){
-    const validate = makeValidate(UserValidatorSchema);
-    const required = makeRequired(UserValidatorSchema);
+export default function ProductForm(props){
+    const validate = makeValidate(ProductValidatorSchema);
+    const required = makeRequired(ProductValidatorSchema);
 
     const [submittedValues, setSubmittedValues] = useState(undefined)
 
     const formFields = [
+        <TextField
+            label="Image URL"
+            name="imgUrl"
+            variant="outlined"
+        />,
         <TextField
             label="Name"
             name="name"
@@ -21,25 +26,27 @@ export default function UserForm(props){
             variant="outlined"
         />,
         <TextField
-            label="Email"
-            name="email"
-            required={required.email}
+            label="Quantity"
+            name="quantity"
+            required={required.quantity}
+            type="number"
             variant="outlined"
         />,
         <TextField
-            label="Password"
-            name="password"
-            type="password"
-            required={required.password}
+            label="Price"
+            name="price"
+            type="number"
+            required={required.price}
             variant="outlined"
         />,
-        <Select name="role" label="Role" formControlProps={{ margin: 'normal' }}>
-            <MenuItem value="admin">Admin</MenuItem>
-            <MenuItem value="user">User</MenuItem>
-        </Select>,
-        <Select name="activated" label="Activate" formControlProps={{ margin: 'normal' }}>
-            <MenuItem value="true">Activated</MenuItem>
-            <MenuItem value="false">Deactivated</MenuItem>
+        <TextField
+            label="Description"
+            name="description"
+            variant="outlined"
+        />,
+        <Select name="status" label="Status" formControlProps={{ margin: 'normal' }}>
+            <MenuItem value="true">On sale</MenuItem>
+            <MenuItem value="false">Out of stock!</MenuItem>
         </Select>
     ];
 
@@ -47,9 +54,9 @@ export default function UserForm(props){
         <>
         <CssBaseline />
         <Form
-            onSubmit={props.handleSubmitUser}
+            onSubmit={props.handleSubmitProduct}
             subscription={true}
-            initialValues={props.selectedUser}
+            initialValues={props.selectedProduct}
             validate={validate}
             key={true}
             render={({handleSubmit, submitting, form}) => (
@@ -58,7 +65,7 @@ export default function UserForm(props){
                     noValidate={true}
                 >   
                     <Typography variant="h6" className={styles.title}>
-                        User Form
+                        Product Form
                     </Typography>
                     {formFields.map((field, index) => (
                         <Grid 
@@ -80,7 +87,7 @@ export default function UserForm(props){
                         className={styles.button}
                         variant="contained"
                         disabled={submitting}
-                        onClick={props.toggleUserForm}
+                        onClick={props.toggleProductForm}
                     >
                         Cancel
                     </Button>
